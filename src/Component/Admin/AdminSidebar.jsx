@@ -28,16 +28,7 @@ const AdminSidebar = () => {
       <Toolbar />
       <Box sx={{ overflow: "auto", color: "white", }}>
         {/* Add Manager Item */}
-        <ListItem disablePadding>
-          <Link to="/addManager" style={{ textDecoration: 'none', color: 'inherit' }}>
-            <ListItemButton style={{ paddingTop: "25px" }}>
-              <ListItemIcon>
-                <GroupAddIcon />
-              </ListItemIcon>
-              <ListItemText primary="Add Manager" />
-            </ListItemButton>
-          </Link>
-        </ListItem>
+      
 
         {/* Change Manager Item */}
         <ListItem disablePadding>
@@ -46,7 +37,7 @@ const AdminSidebar = () => {
               <ListItemIcon>
                 <GroupAddIcon />
               </ListItemIcon>
-              <ListItemText primary="View Manager" />
+              <ListItemText primary="View Employees" />
             </ListItemButton>
           </Link>
         </ListItem>
@@ -71,6 +62,16 @@ const AdminSidebar = () => {
                 <GroupAddIcon />
               </ListItemIcon>
               <ListItemText primary="View Project" />
+            </ListItemButton>
+          </Link>
+        </ListItem>
+        <ListItem disablePadding>
+          <Link to="/adminViewRequest" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <ListItemButton style={{ paddingTop: "25px" }}>
+              <ListItemIcon>
+                <GroupAddIcon />
+              </ListItemIcon>
+              <ListItemText primary="View Requests" />
             </ListItemButton>
           </Link>
         </ListItem>

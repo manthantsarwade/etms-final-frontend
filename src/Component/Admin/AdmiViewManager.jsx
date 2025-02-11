@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -9,31 +10,61 @@ import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 import Bar from '../Bar';
 import AdminSidebar from './AdminSidebar';
-import { Link } from 'react-router-dom';
+import { acceptWorker, deleteWorker } from '../../Services/admin'; // Ensure deleteWorker is correctly defined.
 
 const columns = [
-  { width: 100, label: 'Name', dataKey: 'Name' },
-  { width: 100, label: 'Email', dataKey: 'Email' },
-  { width: 100, label: 'Description', dataKey: 'Description' },
-  { width: 110, label: 'Gender', dataKey: 'Gender' },
-  { width: 110, label: 'Delete', dataKey: 'Delete' },
+  { width: 150, label: 'Name', dataKey: 'Name' },
+  { width: 200, label: 'Email', dataKey: 'Email' },
+  { width: 150, label: 'Department', dataKey: 'Department' },
+  { width: 150, label: 'DOB', dataKey: 'DOB' },
+  { width: 100, label: 'Delete', dataKey: 'Delete' }, // Delete column
 ];
 
-const initialRows = [
-  { Name: 'Samar', Email: 'samar@gmail.com', Description: 'Complete project documentation', Gender: 'M' },
-  { Name: 'Samar2', Email: 'samar@gmail.com', Description: 'Complete project documentation', Gender: 'M' },
-  { Name: 'Samar3', Email: 'samar@gmail.com', Description: 'Complete project documentation', Gender: 'M' },
-  { Name: 'Samar4', Email: 'samar@gmail.com', Description: 'Complete project documentation', Gender: 'M' },
-  { Name: 'Samar5', Email: 'samar@gmail.com', Description: 'Complete project documentation', Gender: 'M' },
-  { Name: 'Samar6', Email: 'samar@gmail.com', Description: 'Complete project documentation', Gender: 'M' },
-];
+const AdminViewManager = () => {
+  const [rows, setRows] = useState([]);
 
-export default function ManagerTaskApproval() {
-  const [rows, setRows] = React.useState(initialRows);
+  // Fetch data from API when component mounts
+  useEffect(() => {
+    fetchRequests();
+  }, []);
 
-  const deleteRow = (index) => {
-    const updatedRows = rows.filter((_, i) => i !== index);
-    setRows(updatedRows);
+  // Delete the worker by id
+  const handleDelete = async (index) => {
+    const userId = rows[index].id;
+    try {
+   
+      const result = await deleteWorker(userId);
+      console.log("Deleted User ID:", rows[index].id);
+
+      // After successful deletion, remove the user from the rows array
+      const updatedRows = rows.filter((_, rowIndex) => rowIndex !== index); // This will filter out the deleted row
+      setRows(updatedRows);  // Update the rows state
+    } catch (error) {
+      console.error("Error deleting request:", error);
+    }
+  };
+
+  // Fetch the list of workers from the backend
+  const fetchRequests = async () => {
+    try {
+      const result = await acceptWorker(); 
+      console.log(result);
+
+      if (result && Array.isArray(result)) {
+        const transformedData = result.map((user) => ({
+          Name: `${user.firstName} ${user.lastName}`,
+          Email: user.email,
+          Department: user.department,
+          DOB: user.dob,
+          id: user.id,
+        }));
+        setRows(transformedData);  // Set the data in state
+      } else {
+        console.error("Unexpected API Response:", result);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   return (
@@ -49,12 +80,11 @@ export default function ManagerTaskApproval() {
           width: `calc(100% - 240px)`,
         }}
       >
-        <h2 style={{ textAlign: 'center', marginBlock: '6px', paddingBlock: "20px" }}>View Manager</h2>
+        <h2 style={{ textAlign: 'center', marginBlock: '6px', paddingBlock: "20px" }}>
+          Accepted Employee
+        </h2>
 
-        <TableContainer
-          component={Paper}
-          style={{ maxHeight: 280, overflow: 'auto' }}
-        >
+        <TableContainer component={Paper} style={{ maxHeight: 280, overflow: 'auto' }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
@@ -65,7 +95,7 @@ export default function ManagerTaskApproval() {
                       width: column.width,
                       backgroundColor: '#735DA5',
                       fontWeight: 'bold',
-                      color: 'white'
+                      color: 'white',
                     }}
                   >
                     {column.label}
@@ -76,44 +106,25 @@ export default function ManagerTaskApproval() {
             <TableBody style={{ background: "#C4DAD2" }}>
               {rows.map((row, index) => (
                 <TableRow key={index}>
-                  {columns.map((column) =>
-                    column.dataKey === 'Delete' ? (
-                      <TableCell key={column.dataKey}>
-                        <Button
-                          variant="contained"
-                          color="error"
-                        >
+                  {columns.map((column) => (
+                    <TableCell key={column.dataKey}>
+                      {column.dataKey === 'Delete' ? (
+                        <Button variant="contained" color="error" onClick={() => handleDelete(index)}>
                           Delete
                         </Button>
-                      </TableCell>
-                    ) : (
-                      <TableCell key={column.dataKey}>
-                        {row[column.dataKey]}
-                      </TableCell>
-                    )
-                  )}
+                      ) : (
+                        row[column.dataKey] || "-"
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
-
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: 50,
-          }}
-        >
-          <Button variant="contained" color="secondary">
-            <Link to="/addManager" style={{ color: "white", textDecoration: "none" }}>
-              Add New Manager
-            </Link>
-          </Button>
-
-        </div>
       </div>
     </>
   );
-}
+};
+
+export default AdminViewManager;

@@ -1,31 +1,57 @@
 import sharp from '../assets/sharp.png';
 import log from '../assets/log1.jpg';
-import { useState } from 'react';
-import Login from './Login';
-import { Link } from 'react-router-dom';
+import { useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingBar from 'react-top-loading-bar';
+import { regiter as registerApi } from '../Services/common' 
+
 
 const Register = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [gender, setGender] = useState("");
+    const [role,setRole]=useState("");
     const [department, setDepartment] = useState("");
+    const [dob, setDob] = useState("");
+    const loadingBarRef = useRef(null);
+    const navigate = useNavigate();
 
-    const onRegister = () => {
-        if (firstName === "" || lastName === "" || email === "" || password === "" || gender === "" || department === "") {
-            alert("Please fill all the fields");
+    const onRegister = async() => {
+        if (firstName === "" || lastName === "" || email === "" || password === "" || dob === "" || department === "" || role === "") {
+            toast.error('Please fill all the fields',{position:'top-left'})
         } else {
-            console.log("First Name: ", firstName);
-            console.log("Last Name: ", lastName);
-            console.log("Email: ", email);
-            console.log("Password: ", password);
-            console.log("gender:", gender);
-            console.log("department:", department);
+            if(loadingBarRef.current) loadingBarRef.current.continuousStart();
+            try{
+                const response = await registerApi(firstName, lastName, email, password, role, dob, department);
+                // console.log(    response.d);
+                // console.log("Last Name: ", lastName);
+                // console.log("Email: ", email);
+                // console.log("Password: ", password);
+                // console.log("dob:", dob);
+                // console.log("department:", department);
+                // console.log("role:", role);
+              
+
+
+                toast.success('Registered Successfully',{position:'top-left'})
+                setTimeout(() => {
+                    if (loadingBarRef.current) loadingBarRef.current.complete();
+                    navigate('/');
+                }, 1000);
+            }catch(error){
+                console.error("Registration failed: ", error);
+                toast.error('Registration failed. Please try again.', {position:'top-left'})
+                if (loadingBarRef.current) loadingBarRef.current.complete();
+            }
+             
         }
     }
     return (
         <>
+        <LoadingBar color="#f11946" height={3} shadow="true" ref={loadingBarRef}  />
             <div style={{ width: "100%", minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", background: "#d4d6ea" }}>
                 <div style={{ display: "flex", width: "70%", maxWidth: "1000px", minHeight: "600px", paddingBlock: "73px" }}>
                     <div style={{ width: "50%" }}>
@@ -43,25 +69,31 @@ const Register = () => {
                             <input onChange={(e) => setLastName(e.target.value)} type="text" placeholder="Enter the last name" style={{ width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }} />
 
                             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6px" }}>
-                                <div>
-                                    <label htmlFor="gender">Select Gender</label>
-                                    <select name="gender" id="gender" value={gender} onChange={(e) => setGender(e.target.value)} style={{ marginTop: "2px", width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }}>
-                                        <option value="">Select Gender</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Others">Others</option>
-                                    </select>
-                                </div>
-                                <div style={{ marginLeft: "14px" }}>
+                            <input onChange={(e) => setDob(e.target.value)} type="date"  style={{ width: "48%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }} />
+
+                                <div style={{ marginLeft: "14px", width:"48%" }}>
                                     <label htmlFor="department">Select Department</label>
                                     <select name="department" id="department" value={department} onChange={(e) => setDepartment(e.target.value)} style={{ marginTop: "2px", width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }}>
                                         <option value="">Select Department</option>
-                                        <option value="Department 1">Department 1</option>
-                                        <option value="Department 2">Department 2</option>
-                                        <option value="Department 3">Department 3</option>
+                                        <option value="ADMIN">ADMIN </option>
+                                        <option value="MANAGMENT">MANAGEMENT </option>
+                                        <option value="DEVELOPEMENT">DEVELOPEMENT </option>
+                                        <option value="TESTER">TESTER </option>
+                                        <option value="SECURITY">SECURITY </option>
                                     </select>
                                 </div>
+                              
                             </div>
+                            <div style={{marginTop:"4px"}} >
+                                    <label htmlFor="role">Select role</label>
+                                    <select name="role" id="role" value={role} onChange={(e) => setRole(e.target.value)} style={{ marginTop: "2px", width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }}>
+                                        <option value="">Select role</option>
+                                        <option value="ADMIN">ADMIN </option>
+                                        <option value="MANAGER">MANAGER </option>
+                                        <option value="EMPLOYEE">EMPLOYEE </option>
+                                       
+                                    </select>
+                                </div>
 
                             <p style={{ marginBlock: "6px" }}>Email*</p>
                             <input onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Enter the email" style={{ width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }} />
