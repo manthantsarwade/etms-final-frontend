@@ -1,8 +1,12 @@
 # Use Node.js as the base image for building the frontend
 FROM node:18 as build
 WORKDIR /app
+
+# Copy package.json and package-lock.json separately for better caching
 COPY package.json package-lock.json ./
 RUN npm install
+
+# Copy the rest of the app and build it
 COPY . .
 RUN npm run build
 

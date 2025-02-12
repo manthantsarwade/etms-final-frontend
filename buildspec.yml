@@ -1,0 +1,30 @@
+version: 0.2
+
+env:
+  variables:
+    ECR_REPOSITORY: "etms-frontend"
+    IMAGE_TAG: "latest" 
+
+phases:
+  install:
+    runtime-versions:
+      docker: 20
+
+  build:
+    commands:
+      - echo Building Docker image...
+      - docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+
+  post_build:
+    commands:
+      - echo Logging into AWS ECR...
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 412381779393.dkr.ecr.ap-south-1.amazonaws.com
+      - echo Tagging and pushing Docker image...
+      - docker tag $ECR_REPOSITORY:$IMAGE_TAG 412381779393.dkr.ecr.ap-south-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+      - docker push 412381779393.dkr.ecr.ap-south-1.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+      - echo Build and push complete.
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes  
