@@ -3,32 +3,18 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
-      - aws --version
       - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 412381779393.dkr.ecr.ap-south-1.amazonaws.com
       - REPOSITORY_URI=412381779393.dkr.ecr.ap-south-1.amazonaws.com/etms-frontend
-      - IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-      - LATEST_TAG=latest
-
 
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building the Docker image for frontend...
-      - docker build -t etms-frontend:$LATEST_TAG -t etms-frontend:$IMAGE_TAG .
-
+      - docker build -t etms-frontend:latest .
 
   post_build:
     commands:
-      - echo Build completed on `date`
-      - echo Pushing image to ECR...
-      - docker tag etms-frontend:$LATEST_TAG $REPOSITORY_URI:$LATEST_TAG
-      - docker push $REPOSITORY_URI:$LATEST_TAG
-      - docker tag etms-frontend:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Writing image definitions file...
-      - printf '[{"name":"frontend","imageUri":"%s"}]' "$REPOSITORY_URI:$IMAGE_TAG" > imagedefinitions.json
-      - cat imagedefinitions.json
+      - docker tag etms-frontend:latest $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:latest
+      - printf '[{"name":"frontend","imageUri":"%s"}]' "$REPOSITORY_URI:latest" > imagedefinitions.json
 
 artifacts:
   files:
