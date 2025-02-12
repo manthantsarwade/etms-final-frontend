@@ -136,7 +136,7 @@ export async function updateTask(taskData, taskId) {
  }
  export async function verifyTask(manId){
   try {
-    const url = createUrl(`manager/verify/${manId}`);
+    const url = `http://172.20.0.3:8080/manager/verify/${manId}`;
     const token = sessionStorage.getItem("token");
     const response = await axios.get(url,{
         headers:{Authorization: `Bearer ${token}`},
