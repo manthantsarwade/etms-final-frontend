@@ -8,17 +8,15 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 18  # Use Node.js because CodeBuild still needs it to run
+      nodejs: 18 
     commands:
-      - echo Installing AWS CLI v2...
-      - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      - unzip awscliv2.zip
-      - sudo ./aws/install
-      - echo Checking Docker version...
-      - docker --version
+      - echo Installing dependencies...
+      - npm install --frozen-lockfile
 
   build:
     commands:
+      - echo Building the React Vite app...
+      - npm run build
       - echo Building Docker image...
       - docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
 
