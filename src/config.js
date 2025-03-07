@@ -1,3 +1,3 @@
 export const config = {
-    serverUrl: "http://etmsproject.duckdns.org:8080",
+    serverUrl: "65.0.125.172:8080",
 };
