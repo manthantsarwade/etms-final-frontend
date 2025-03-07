@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { config } from "../config";
 
 function FileDisplay({ taskId }) {
   const [fileUrl, setFileUrl] = useState(null);
@@ -12,7 +13,7 @@ function FileDisplay({ taskId }) {
         return;
       }
 
-      const response = await axios.get(`http://localhost:8080/manager/verify/${taskId}`, {
+      const response = await axios.get(`${config.serverUrl}/manager/verify/${taskId}`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: "blob", // Ensure response is a binary file
       });
