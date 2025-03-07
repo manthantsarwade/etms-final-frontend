@@ -134,19 +134,19 @@ export async function updateTask(taskData, taskId) {
     }
 
  }
- export async function verifyTask(manId){
+ export async function verifyTask(manId) {
   try {
-    const url = `http://172.20.0.3:8080/manager/verify/${manId}`;
+    const url = `${config.serverUrl}/manager/verify/${manId}`;
     const token = sessionStorage.getItem("token");
-    const response = await axios.get(url,{
-        headers:{Authorization: `Bearer ${token}`},
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${token}` },
     });
-  return response.data;
-    
+    return response.data;
   } catch (error) {
-    
+    console.error(error);
   }
- }
+}
+
 
 
 
