@@ -68,8 +68,14 @@ const Register = () => {
                             <p style={{ marginBlock: "6px" }}>Last Name*</p>
                             <input onChange={(e) => setLastName(e.target.value)} type="text" placeholder="Enter the last name" style={{ width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }} />
 
+                            
+                           
                             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "6px" }}>
-                            <input onChange={(e) => setDob(e.target.value)} type="date"  style={{ width: "48%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }} />
+                            
+                              <div style={{display:"flex",flexDirection:"column"}}>
+                               <span style={{marginBottom:"1px"}}>Select Dob</span>
+                              <input onChange={(e) => setDob(e.target.value)} type="date" style={{ width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }} />
+                              </div>
 
                                 <div style={{ marginLeft: "14px", width:"48%" }}>
                                     <label htmlFor="department">Select Department</label>
@@ -84,6 +90,11 @@ const Register = () => {
                                 </div>
                               
                             </div>
+
+
+
+
+
                             <div style={{marginTop:"4px"}} >
                                     <label htmlFor="role">Select role</label>
                                     <select name="role" id="role" value={role} onChange={(e) => setRole(e.target.value)} style={{ marginTop: "2px", width: "100%", border: "1px solid violet", borderRadius: "4px", padding: "8px" }}>

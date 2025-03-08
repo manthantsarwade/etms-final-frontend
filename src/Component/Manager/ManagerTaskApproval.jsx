@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box,
   Toolbar, Dialog, DialogTitle, DialogContent, DialogActions, Typography
@@ -8,6 +9,7 @@ import ManagerSidebar from "./ManagerSidebar";
 import { getPendingTask, approveRequests, rejectRequest } from '../../Services/manager';
 import { jwtDecode } from "jwt-decode";
 import FileDisplay from "../File";  
+
 
 const columns = [
   { width: 100, label: "Title", dataKey: "Title" },
@@ -22,6 +24,8 @@ export default function ManagerTaskApproval() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [taskRows, setTaskRows] = useState([]);
   const [showFile, setShowFile] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchTasks();
@@ -58,6 +62,8 @@ export default function ManagerTaskApproval() {
      // console.log("Task Approved:", selectedTask.Taskid);
       handleClose();
       fetchTasks();
+
+      navigate("/managerHome");
     } catch (error) {
       console.error("Error approving task:", error);
     }

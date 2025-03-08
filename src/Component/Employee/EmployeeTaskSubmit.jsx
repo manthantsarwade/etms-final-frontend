@@ -61,7 +61,7 @@ const EmployeeTaskSubmit = () => {
       const result = await uploadFile(formData.id, formData.file);
 
         toast.success("Task submitted successfully!");
-        navigate("/managerHome");
+        navigate("/employeehome");
    
       
     } catch (error) {
