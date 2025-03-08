@@ -216,9 +216,13 @@ const EmployeeHome = () => {
         if (token) {
             const decoded = jwtDecode(token);
             const id = decoded.user_id;
-            const email = decoded.email; // Assuming the token contains the email
-            const name = email.split('@')[0]; // Extracting the name from the email
-            setEmployeeName(name);
+            const email = decoded.sub; // Using the sub field which contains the email
+            if (email) {
+                const name = email.split('@')[0]; // Extracting the name from the email
+                setEmployeeName(name);
+            } else {
+                setEmployeeName("Unknown User");
+            }
 
             const result = await getTaskById(id);
             if (result.status !== "error") {
