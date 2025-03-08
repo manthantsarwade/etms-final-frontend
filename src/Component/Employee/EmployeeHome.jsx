@@ -213,23 +213,35 @@ const EmployeeHome = () => {
 
     const fetchData = async () => {
         const token = sessionStorage.getItem("token");
-        if (token) {
+
+        if (!token) {
+            console.error("No token found in sessionStorage.");
+            setEmployeeName("Unknown User");
+            return;
+        }
+
+        try {
             const decoded = jwtDecode(token);
+            console.log("Decoded Token:", decoded); // Debugging: Check decoded token structure
+
             const id = decoded.user_id;
-            const email = decoded.sub; // Using the sub field which contains the email
-            if (email) {
-                const name = email.split('@')[0]; // Extracting the name from the email
-                setEmployeeName(name);
-            } else {
+            const email = decoded.sub; // Ensure `sub` exists in the token
+
+            if (!email) {
+                console.error("Email (sub) not found in token payload.");
                 setEmployeeName("Unknown User");
+            } else {
+                const name = email.split('@')[0]; // Extracting name from email
+                setEmployeeName(name);
             }
 
             const result = await getTaskById(id);
             if (result.status !== "error") {
-                setTasks(result); 
-            } else {
-               // console.error(result.message);
+                setTasks(result);
             }
+        } catch (error) {
+            console.error("Error decoding token:", error);
+            setEmployeeName("Unknown User");
         }
     };
 
@@ -269,22 +281,6 @@ const EmployeeHome = () => {
                 <Typography variant="h6" sx={{ mb: 2 }}>
                     {employeeName}
                 </Typography>
-
-                {/* <Button
-                    variant="contained"
-                    sx={{
-                        borderRadius: "44px",
-                        mb: 2,
-                        backgroundColor: "#B2A5FF",
-                        color: "white",
-                        textTransform: "none",
-                        padding: "10px 20px",
-                    }}
-                >
-                    <Link to='/employeeProfile' style={{ textDecoration: 'none', color: 'white' }}>
-                        Edit Profile
-                    </Link>
-                </Button> */}
             </Box>
 
             {/* Main Content */}
