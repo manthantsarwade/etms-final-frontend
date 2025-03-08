@@ -264,7 +264,7 @@ const EmployeeHome = () => {
                     {employeeName}
                 </Typography>
 
-                <Button
+                {/* <Button
                     variant="contained"
                     sx={{
                         borderRadius: "44px",
@@ -278,7 +278,7 @@ const EmployeeHome = () => {
                     <Link to='/employeeProfile' style={{ textDecoration: 'none', color: 'white' }}>
                         Edit Profile
                     </Link>
-                </Button>
+                </Button> */}
             </Box>
 
             {/* Main Content */}
