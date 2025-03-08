@@ -213,17 +213,19 @@ const EmployeeHome = () => {
 
     const fetchData = async () => {
         const token = sessionStorage.getItem("token");
-        const decoded = jwtDecode(token);
-        const id = decoded.user_id;
-        const email = decoded.email; // Assuming the token contains the email
-        const name = email.split('@')[0]; // Extracting the name from the email
-        setEmployeeName(name);
+        if (token) {
+            const decoded = jwtDecode(token);
+            const id = decoded.user_id;
+            const email = decoded.email; // Assuming the token contains the email
+            const name = email.split('@')[0]; // Extracting the name from the email
+            setEmployeeName(name);
 
-        const result = await getTaskById(id);
-        if (result.status !== "error") {
-            setTasks(result); 
-        } else {
-           // console.error(result.message);
+            const result = await getTaskById(id);
+            if (result.status !== "error") {
+                setTasks(result); 
+            } else {
+               // console.error(result.message);
+            }
         }
     };
 
